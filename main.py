@@ -1,13 +1,19 @@
 import cv2
+import numpy as np
+import matplotlib as plt
 
+# Import Image
 image = cv2.imread("assets/shape.jpg")
 
+# Convert the color image into gray
 gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 _, thresh_image = cv2.threshold(gray_image, 220, 255, cv2.THRESH_BINARY)
 
+# Find the contours of the image
 contours, hierarchy = cv2.findContours(thresh_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+# Detect the shape and write the shape name in the shape
 for i, contour in enumerate(contours):
     if i == 0:
         continue
@@ -17,6 +23,7 @@ for i, contour in enumerate(contours):
 
     cv2.drawContours(image, contour, 0, (0, 0, 0), 4)
 
+    # Find the coordinates of a specific shape
     x, y, w, h = cv2.boundingRect(approx)
     x_mid = int(x + (w / 3))
     y_mid = int(y + (h / 1.5))
@@ -25,6 +32,7 @@ for i, contour in enumerate(contours):
     colour = (0, 0, 0)
     font = cv2.FONT_HERSHEY_DUPLEX
 
+    # Define the shape
     if len(approx) == 3:
         cv2.putText(image, "Triangle", coords, font, 1, colour, 1)
     elif len(approx) == 4:
@@ -36,5 +44,6 @@ for i, contour in enumerate(contours):
     else:
         cv2.putText(image, "Circle", coords, font, 1, colour, 1)
 
-cv2.imshow("shapes_detected", image)
+# Display the output image
+cv2.imshow("Shapes Detected", image)
 cv2.waitKey(0)
